@@ -16,15 +16,30 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type User {
+  id: ID!
+  firstname: String!
+  lastname: String
+  username: String!
+  email: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type Query {
   findAll: [Post!]!
   findOne(id: String!): Post!
+  users: [User!]!
+  user(id: String!): User!
 }
 
 type Mutation {
   createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!): Post!
   removePost(id: String!): Post!
+  createUser(user: CreateUserInput!): User!
+  updateUser(user: UpdateUserInput!, id: String!): User!
+  removeUser(id: String!): Boolean!
 }
 
 input CreatePostInput {
@@ -37,5 +52,22 @@ input UpdatePostInput {
   title: String
   content: String
   likes: Int
+  id: ID!
+}
+
+input CreateUserInput {
+  firstname: String!
+  lastname: String
+  username: String!
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  firstname: String
+  lastname: String
+  username: String
+  email: String
+  password: String
   id: ID!
 }
