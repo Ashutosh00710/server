@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
@@ -36,6 +37,27 @@ export class User {
   @Prop()
   @Field(() => Date)
   updatedAt: Date;
+
+  @Prop({ required: true, default: true })
+  active: boolean;
+
+  comparePassword: (password: string) => Promise<boolean>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.index({ username: 1, email: 1 }, { unique: true });
+
+UserSchema.pre('save', async function (next) {
+  const user = this as UserDocument;
+  if (!user.isModified('password')) {
+    return next();
+  }
+  user.password = await bcrypt.hash(user.password, 10);
+  return next();
+});
+
+UserSchema.methods.comparePassword = async function (password: string) {
+  const user = this as UserDocument;
+  return bcrypt.compare(password, user.password).catch(() => false);
+};

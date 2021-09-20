@@ -29,15 +29,25 @@ type User {
 type Query {
   findAll: [Post!]!
   findOne(id: String!): Post!
+  login(user: LoginInput!): User
+  me: User
   users: [User!]!
   user(id: String!): User!
+}
+
+input LoginInput {
+  firstname: String
+  lastname: String
+  username: String
+  email: String
+  password: String
 }
 
 type Mutation {
   createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!): Post!
   removePost(id: String!): Post!
-  createUser(user: CreateUserInput!): User!
+  register(user: CreateUserInput!): User!
   updateUser(user: UpdateUserInput!, id: String!): User!
   removeUser(id: String!): Boolean!
 }
